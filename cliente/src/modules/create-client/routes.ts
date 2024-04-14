@@ -5,6 +5,6 @@ const router = Router();
 
 const clientRoute = new CreateClientController();
 
-router.post("/client", clientRoute.handle);
+router.post("/client", (req, res) => clientRoute.handle(req, res));
 
 export default router;
