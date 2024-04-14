@@ -9,6 +9,7 @@ export type CreateclientRequest = {
     password: string;
     email: string;
     phone: string;
+    id?: string;
 }
 
 export class CreateClientUseCase {
@@ -32,7 +33,7 @@ export class CreateClientUseCase {
 
         const clientCreated = await this.clientRepository.create({ name, email, phone, password: hashPassword });
 
-        await this.kafkaService.execute("CUSTOMER_CREATED", clientCreated);
+        await this.kafkaService.execute("CUSTOMER_CREATED", { id: clientCreated.id, email: clientCreated.email });
 
         return clientCreated;
     }
