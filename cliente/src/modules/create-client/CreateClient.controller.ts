@@ -9,7 +9,8 @@ export class CreateClientController {
     }
 
     async handle(request: Request, response: Response) {
-        const client = await this.useCase.execute(request.body);
+        const result = await this.useCase.execute(request.body);
+        const { password: _, ...client } = result;
 
         return response.status(201).json(client);
     }
