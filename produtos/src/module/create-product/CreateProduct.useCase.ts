@@ -1,6 +1,6 @@
+import { KafkaSendMessage } from "../../infra/provider/kafka/consumer/producer";
 import { HttpException } from "../middleware/HttpException";
 import { ProductRepository } from "../repository/CreateProduct.repository";
-import { } from ''
 
 export type ProductType = {
     name: string;
@@ -13,10 +13,11 @@ export type ProductType = {
 
 export class CreateProductUseCase {
     private productRepository: ProductRepository;
-    private kafkaService: KafkaSendMessage
+    private kafkaService: KafkaSendMessage;
 
     constructor() {
-        this.productRepository = new ProductRepository()
+        this.productRepository = new ProductRepository(),
+            this.kafkaService = new KafkaSendMessage()
     }
 
     async execute(data: ProductType) {
@@ -24,6 +25,8 @@ export class CreateProductUseCase {
         if (product) throw new HttpException(400, 'Product already exists');
 
         const productCreated = await this.productRepository.create(data);
+
+        await this.kafkaService.execute('PRODUCT_CREATED', { id: productCreated.id, code: productCreated.code });
 
         return productCreated;
     }

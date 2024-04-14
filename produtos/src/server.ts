@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
+import './infra/provider/kafka/consumer';
 import 'express-async-errors';
 import router from './module/create-product/routes';
 import { HttpErrorMiddleware } from './module/middleware/httpError.middleware';
