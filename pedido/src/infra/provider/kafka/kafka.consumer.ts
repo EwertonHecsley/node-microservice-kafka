@@ -1,10 +1,18 @@
 import { kafka } from "."
 
-export const kafkaConsumer = async (topic: string) => {
-    const consumer = kafka.consumer({ groupId: "ORDER_APP" })
-    await consumer.connect();
+export class KafkaConsumer {
+    private kafkaService = kafka;
 
-    await consumer.subscribe({ topic, fromBeginning: true });
+    constructor() {
+        this.kafkaService = kafka;
+    }
 
-    return consumer;
+    async kafkaConsumer(topic: string) {
+        const consumer = this.kafkaService.consumer({ groupId: "ORDER_APP" });
+        await consumer.connect();
+
+        await consumer.subscribe({ topic, fromBeginning: true });
+
+        return consumer;
+    }
 }
