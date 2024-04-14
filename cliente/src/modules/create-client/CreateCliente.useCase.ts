@@ -1,3 +1,4 @@
+import { HttpException } from "../middleware/HttpException";
 import { ClientReposiory } from "../repository/ClientRepository";
 
 export type CreateclientRequest = {
@@ -8,15 +9,19 @@ export type CreateclientRequest = {
 }
 
 export class CreateClientUseCase {
-    constructor(private readonly clientRepository: ClientReposiory) { }
+    private clientRepository: ClientReposiory;
+
+    constructor() {
+        this.clientRepository = new ClientReposiory();
+    }
 
     async execute(data: CreateclientRequest) {
-        const costumer = await this.clientRepository.findClientByEmail(data.email);
-        if (costumer) throw new Error("Email is already");
+        const client = await this.clientRepository.findClientByEmail(data.email);
+        if (client) throw new HttpException(400, "Email is already");
 
-        const costumerCreated = await this.clientRepository.create(data);
+        const clientCreated = await this.clientRepository.create(data);
 
-        return costumerCreated;
+        return clientCreated;
     }
 
 }
